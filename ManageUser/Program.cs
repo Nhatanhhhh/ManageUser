@@ -21,7 +21,10 @@ builder.Services.AddControllers().AddJsonOptions(options =>
 
 // Register DbContext
 builder.Services.AddDbContext<AppDbContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+{
+    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
+    options.EnableSensitiveDataLogging(); // Thêm dòng này
+});
 
 // Register DAO and Repository
 builder.Services.AddScoped<UserDAO>();
