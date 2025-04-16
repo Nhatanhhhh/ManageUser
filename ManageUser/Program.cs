@@ -1,9 +1,32 @@
+using Microsoft.EntityFrameworkCore;
+using ManagerUser.Context;
+using ManagerUser.DAO;
+using ManagerUser.Repository;
+using System.Text.Json;
+using System.Text.Json.Serialization;
+using ManagerUser.Utils;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
+builder.Services.AddControllers().AddJsonOptions(options =>
+{
+    options.JsonSerializerOptions.Converters.Add(new JsonDateTimeConverter()); // Nếu có custom converter
+    options.JsonSerializerOptions.PropertyNamingPolicy = JsonNamingPolicy.CamelCase;
+    options.JsonSerializerOptions.WriteIndented = true;
+    
+    // Thêm cấu hình này để format DateTime
+    options.JsonSerializerOptions.Converters.Add(new DateTimeConverter());
+});
 
-builder.Services.AddControllers();
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+// Register DbContext
+builder.Services.AddDbContext<AppDbContext>(options =>
+    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+
+// Register DAO and Repository
+builder.Services.AddScoped<UserDAO>();
+builder.Services.AddScoped<UserRepository>();
+
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
