@@ -1,5 +1,5 @@
-using Microsoft.EntityFrameworkCore;
 using ManagerUser.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace ManagerUser.Context
 {
@@ -7,15 +7,12 @@ namespace ManagerUser.Context
     {
         public DbSet<User> Users { get; set; }
 
-        public AppDbContext(DbContextOptions<AppDbContext> options) : base(options)
-        {
-        }
+        public AppDbContext(DbContextOptions<AppDbContext> options)
+            : base(options) { }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<User>()
-                .HasIndex(u => u.Email)
-                .IsUnique();
+            modelBuilder.Entity<User>().HasIndex(u => u.Email).IsUnique();
         }
     }
 }

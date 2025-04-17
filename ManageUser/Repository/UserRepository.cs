@@ -28,7 +28,10 @@ namespace ManagerUser.Repository
 
         public async Task<User> GetUserByIdAsync(int id)
         {
-            return await _userDAO.GetUserByIdAsync(id);
+            var user = await _userDAO.GetUserByIdAsync(id);
+            if (user == null)
+                throw new KeyNotFoundException($"User with ID {id} not found.");
+            return user;
         }
 
         public async Task<User> UpdateUserAsync(User user)
@@ -36,7 +39,10 @@ namespace ManagerUser.Repository
             if (string.IsNullOrWhiteSpace(user.Email))
                 throw new ArgumentException("Email cannot be empty.");
 
-            return await _userDAO.UpdateUserAsync(user);
+            var updatedUser = await _userDAO.UpdateUserAsync(user);
+            if (updatedUser == null)
+                throw new InvalidOperationException("Failed to update user.");
+            return updatedUser;
         }
 
         public async Task<bool> DeleteUserAsync(int id)

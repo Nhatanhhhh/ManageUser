@@ -1,6 +1,6 @@
-using Microsoft.AspNetCore.Mvc;
-using ManagerUser.Repository;
 using ManagerUser.Models;
+using ManagerUser.Repository;
+using Microsoft.AspNetCore.Mvc;
 
 namespace ManagerUser.Controllers
 {
@@ -53,9 +53,12 @@ namespace ManagerUser.Controllers
             {
                 if (!ModelState.IsValid)
                     return BadRequest(ModelState);
-
                 var createdUser = await _userRepository.CreateUserAsync(user);
-                return CreatedAtAction(nameof(GetAllUsers), new { id = createdUser.Id }, createdUser);
+                return CreatedAtAction(
+                    nameof(GetAllUsers),
+                    new { id = createdUser.Id },
+                    createdUser
+                );
             }
             catch (Exception ex)
             {
@@ -105,11 +108,11 @@ namespace ManagerUser.Controllers
         }
 
         [HttpGet("search")]
-        public async Task<IActionResult> SearchUsers([FromQuery] string term = null)
+        public async Task<IActionResult> SearchUsers([FromQuery] string? term = null)
         {
             try
             {
-                var users = await _userRepository.SearchUsersAsync(term);
+                var users = await _userRepository.SearchUsersAsync(term ?? string.Empty);
                 return Ok(users);
             }
             catch (Exception ex)

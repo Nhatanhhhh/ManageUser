@@ -1,6 +1,6 @@
-using Microsoft.EntityFrameworkCore;
 using ManagerUser.Context;
 using ManagerUser.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace ManagerUser.DAO
 {
@@ -29,9 +29,7 @@ namespace ManagerUser.DAO
 
         public async Task<User?> GetUserByIdAsync(int id)
         {
-            return await _context.Users
-                        .AsNoTracking()
-                        .FirstOrDefaultAsync(u => u.Id == id);
+            return await _context.Users.AsNoTracking().FirstOrDefaultAsync(u => u.Id == id);
         }
 
         public async Task<User?> UpdateUserAsync(User user)
@@ -64,8 +62,11 @@ namespace ManagerUser.DAO
             if (string.IsNullOrEmpty(searchTerm))
                 return await _context.Users.ToListAsync();
 
-            return await _context.Users
-                .Where(u => u.Name.Contains(searchTerm) || u.Email.Contains(searchTerm))
+            return await _context
+                .Users.Where(u =>
+                    (u.Name != null && u.Name.Contains(searchTerm))
+                    || (u.Email != null && u.Email.Contains(searchTerm))
+                )
                 .ToListAsync();
         }
     }
